@@ -13,7 +13,7 @@ class AricleCellTableViewCell: UITableViewCell {
     @IBOutlet weak var title: UILabel!
     @IBOutlet weak var articleImage: UIImageView!
    
-    @IBOutlet weak var articleDescription: UITextView!
+    @IBOutlet weak var articleDescription: UILabel!
     
     
     @IBOutlet weak var urlLink: UITextView!

@@ -37,7 +37,7 @@ class ViewController: UIViewController {
         
         loadCacheData()
         if newsCacheData?.count == 0{
-        loadData()
+            loadData()
         }
         articleTableView.addSubview(self.refreshControl)
         // Do any additional setup after loading the view, typically from a nib.
@@ -67,7 +67,7 @@ class ViewController: UIViewController {
             do {
                 let decoder = JSONDecoder()
                 let newsData = try decoder.decode(News.self, from: data)
-               
+                
                 DispatchQueue.main.sync {
                     self.addNews(data: newsData)
                 }
@@ -107,8 +107,8 @@ class ViewController: UIViewController {
             dict[AppManager.Keys.totalResults.rawValue] = data.totalResults
             do{
                 if let urltoimage = article.urlToImage , let url = URL.init(string: urltoimage){
-                let data = try Data.init(contentsOf: url)
-                dict[AppManager.Keys.image.rawValue] = UIImagePNGRepresentation(UIImage.init(data: data)!)
+                    let data = try Data.init(contentsOf: url)
+                    dict[AppManager.Keys.image.rawValue] = UIImagePNGRepresentation(UIImage.init(data: data)!)
                 }else{
                     
                 }
@@ -139,9 +139,7 @@ extension ViewController:UITableViewDelegate, UITableViewDataSource{
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 5
     }
-     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat{
-        return 150
-    }
+     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if self.newsCacheData!.count > 0{
@@ -157,8 +155,16 @@ extension ViewController:UITableViewDelegate, UITableViewDataSource{
                 cell.articleDescription.text = description
             }
             do{
-                if let urlToImage = self.newsCacheData![indexPath.row].urlToImage{
-                    cell.articleImage.image = UIImage.init(data: try Data.init(contentsOf:URL(string: urlToImage)!))
+                if let urlToImage = self.newsCacheData![indexPath.row].urlToImage,
+                    let url = URL.init(string: urlToImage){
+                    DispatchQueue.main.async {
+                        do{
+                        cell.articleImage.image = UIImage.init(data: try Data.init(contentsOf: url))
+                        }catch{
+                            print(error)
+                        }
+                    }
+                    
                 }
             }catch{
                 print("error in getting the data")
